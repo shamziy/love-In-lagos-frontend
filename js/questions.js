@@ -22,5 +22,3 @@ BL.slice(0,33).map(x=>`What's the best ${x} in Lagos, and why?`).concat(PE.slice
 WH.slice(0,33).map(x=>`Who is more likely to ${x}: you or me?`).concat(FS.slice(0,33).map(x=>`Finish this sentence: ${x}…`)),
 SI.slice(0,33).map(x=>`What would you do if you ${x}?`).concat(GF.slice(0,33).map(x=>`If you could have ${x} for one day, what would you do with it?`))];
 const QB=HW.flatMap((a,c)=>a.concat(GEN[c]).map(t=>[c,t]));
-
-
