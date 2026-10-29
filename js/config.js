@@ -6,4 +6,4 @@
 //
 // If you put the frontend on its own host (Netlify, GitHub Pages...), remove the // below and
 // type the address of your live backend:
-// window.LIL_API = "https://your-backend.onrender.com";
+// window.LIL_API = "https://love-in-lagos-api.onrender.com";
