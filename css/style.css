@@ -103,3 +103,12 @@ select{width:100%;border:2px solid var(--line);background:var(--card);color:var(
 
 nav button{position:relative}.bdg{position:absolute;top:0;right:20%;background:#e63946;color:#fff;border-radius:99px;font:800 10px "Baloo 2";padding:0 6px;font-style:normal}
 .gq .ans{margin-top:6px;background:#ffffffaa;border-radius:12px;padding:6px 10px;font-weight:600}.lnk2{color:var(--mut);text-decoration:underline;cursor:pointer;font-weight:800}
+
+/* v2: Return to Lagos, back arrow, map pictures */
+.rtl{position:absolute;top:16px;left:16px;display:flex;gap:6px;align-items:center;background:var(--soft);color:var(--ink);border:0;border-radius:99px;padding:7px 14px 7px 10px;font:800 14px "Baloo 2";z-index:2}.rtl .ic{width:18px;height:18px;transform:scaleX(-1)}
+.md.auth{padding-top:62px}
+.bk{position:sticky;top:0;z-index:8;display:inline-flex;gap:6px;align-items:center;background:var(--pri);color:#fff;border:0;border-radius:99px;padding:8px 16px 8px 12px;font:800 15px "Baloo 2";margin:0 0 12px;box-shadow:0 4px 12px #dc5f8444}.bk .ic{width:20px;height:20px;transform:scaleX(-1)}
+.scn.map{aspect-ratio:360/300}
+.chb{background:linear-gradient(120deg,#fff0c9,#e4d6f0);color:#3b2a3a;border-radius:99px;padding:8px 14px;font:800 14px "Baloo 2";margin:0 0 12px;text-align:center}
+.xpc{text-align:center;background:linear-gradient(120deg,#ffe3a8,#ffc1d3);color:#3b2a3a}.xpc b{font-size:32px;display:block;line-height:1.1}.xpc span{color:#6b4a5a}.bst{background:linear-gradient(120deg,#fff0c9,#e4d6f0);color:#3b2a3a}.bst .sub,.bst .note{color:#6b4a5a}
+.pin .pi{display:block;width:66px;padding:0;background:none;border:0;border-radius:0;box-shadow:none;overflow:visible}.pin .pi svg{display:block;width:100%;height:auto;overflow:visible;filter:drop-shadow(0 3px 3px #0004)}.pin>span:last-child{margin-top:3px}
