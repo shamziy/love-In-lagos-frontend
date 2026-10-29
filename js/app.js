@@ -1,4 +1,3 @@
-app.js;
 // Love in Lagos frontend. Every screen talks to the backend through /api (see server/server.js).
 const $=s=>document.querySelector(s),esc=s=>String(s==null?"":s).replace(/[&<>"]/g,k=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[k]));
 let TOK="";try{TOK=localStorage.getItem("lil_token")||""}catch(e){}
