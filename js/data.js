@@ -30,3 +30,4 @@ const DAILY=[
 ["🪩","Detty Friday","Party time. Head to Nightlife.",3,"Which dance craze is a Lagos favourite?",["Polka","Shoki","Tango"],1],
 ["🏖️","Beach Saturday","Sun, sand and games.",1,"Which beach is a Lekki favourite?",["Waikiki","Bondi","Elegushi"],2]
 ];
+
