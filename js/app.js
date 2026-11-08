@@ -1,8 +1,11 @@
+
 // Love in Lagos frontend. Every screen talks to the backend through /api (see server/server.js).
 const $=s=>document.querySelector(s),esc=s=>String(s==null?"":s).replace(/[&<>"]/g,k=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[k]));
 let TOK="";try{TOK=localStorage.getItem("lil_token")||""}catch(e){}
 const setTok=t=>{TOK=t;try{t?localStorage.setItem("lil_token",t):localStorage.removeItem("lil_token")}catch(e){}};
 let me=null,BACK="",XPV=null,tab="home",sc=0,cur=null,T=0,UC={},PH={},M={incoming:[],matches:[],sent:[]},PEO=[],PREV=null,LOW={},DECL={},POPPED={},MINIT=0,MSG=[],GM=null,VIS=[],DLY=null,ACTV=[],QAL=[],SR=null,sT=0,after=null,phd="",tav=null,dr=null,dmode="";
+
+// Corrected API connection: use the Render backend configured in config.js.
 async function api(m, p, b) {
     const API_ROOT = String(window.LIL_API || "").replace(/\/+$/, "");
     const API_URL = API_ROOT ? API_ROOT + "/api" + p : "/api" + p;
@@ -17,7 +20,6 @@ async function api(m, p, b) {
     });
 
     let j = null;
-
     try {
         j = await r.json();
     } catch (e) {}
@@ -25,16 +27,15 @@ async function api(m, p, b) {
     if (!r.ok) {
         const e = new Error((j && j.error) || "Something went wrong");
         e.status = r.status;
-
         if (r.status === 401 && TOK && me) {
             setTimeout(() => logout(true));
         }
-
         throw e;
     }
 
     return j;
 }
+
 const IC={h:"M12 21s-8-5.3-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.7-8 11-8 11z",u:"M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c0-4 3.6-7 8-7s8 3 8 7",c:"M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.6A8 8 0 1 1 21 12z",m:"M9 4 3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14",pin:"M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11zM12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",sp:"M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z",ar:"M5 12h14M13 6l6 6-6 6",s:"M22 2 11 13M22 2l-7 20-4-9-9-4z",nav:"M3 11l19-9-9 19-2-8z",pp:"M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21c0-4 3-6 7-6s7 2 7 6M16 3a4 4 0 0 1 0 8M18 15c2.5.6 4 2.4 4 6",eye:"M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z",x:"M6 6l12 12M18 6 6 18",pen:"M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"};
 const ic=(d,f)=>`<svg class="ic" viewBox="0 0 24 24" fill="${f?"currentColor":"none"}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
 function toast(m){const e=document.createElement("div");e.className="toast";e.textContent=m;document.body.appendChild(e);setTimeout(()=>e.remove(),2600)}
@@ -139,13 +140,12 @@ qa=[...DLY.history.map(h=>({q:h.q,a:h.answer,by:"You",ok:h.ok,r:h.correct,ts:Dat
 return `<div class="dh"><span>${d[0]}</span><div><h2>${esc(DLY.title)}</h2><div class="jb">${d[2]}</div></div></div><div class="stats"><div class="sb">🔥 Streak<b style="display:block;font-size:24px">${DLY.streak} day${DLY.streak===1?"":"s"}</b></div><div class="sb">✅ Today<b style="display:block;font-size:24px">${td.length} thing${td.length===1?"":"s"}</b></div></div>${boostCard()}${cupidCard()}${lbCard()}<div class="card"><b>Daily question</b><h3>${esc(DLY.question)}</h3>${y?`<p class="sub">You said <b>${esc(y.answer)}</b> · ${y.ok?"✅ Correct":"❌ It was "+esc(y.correct)}. Come back tomorrow for a new one.</p>`:DLY.options.map((o,i)=>`<button class="btn o" onclick="ans(${i})">${esc(o)}</button>`).join("")}</div><h3 class="sec">Your day on the app</h3>${td.length?td.slice().reverse().map(x=>`<div class="row"><div><b>${esc(x.text)}</b><div class="jb">${new Date(x.created).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</div></div></div>`).join(""):'<p class="sub">Nothing yet today. Visit a spot, match with someone or answer the daily question.</p>'}<h3 class="sec">Questions &amp; answers</h3>${qa.length?qa.map(x=>`<div class="row"><div><b>${esc(x.q)}</b><div class="jb">${esc(x.by)}: ${esc(x.a)}${x.r!==undefined?(x.ok?" · ✅ Correct":" · ❌ It was "+esc(x.r)):""}</div></div></div>`).join(""):'<p class="sub">Your answers will show up here.</p>'}<button class="btn" onclick="pick(${d[3]})">Go to today's spot: ${SCN[d[3]][0]}</button>`}
 async function ans(i){try{const r=await api("POST","/daily/answer",{option:i});toast(r.ok?"Correct! 🎉":"Not quite. It's "+r.correct)}catch(e){toast(e.message)}await loadDaily()}
 // ---------- XP + Lagos Charm ----------
-async function loadXP(){if(!me)return;try{const r=await api("GET","/xp"),o=XPV;XPV=r;me.xp=r.total;charmPill();if(o&&r.total>o.total)toast("⭐ +"+(r.total-o.total)+" XP");const hb=$("#chb");if(hb){const mn=Math.ceil((r.boostUntil-Date.now())/6e4);if(mn>0)hb.textContent="⚡ Lagos Charm is on: every match is automatic · "+mn+" min left";else hb.remove()}const e=$("#xpv");if(e){e.textContent="⭐ "+r.total+" XP";$("#xpt").textContent="total earned · 💰 "+r.bal+" to spend"}const sk=$("#stk");if(sk)sk.outerHTML=streakCard();if(tab==="daily"&&(!o||o.today!==r.today||o.boostUntil!==r.boostUntil))render(1)}catch(e){}}
+async function loadXP(){if(!me)return;try{const r=await api("GET","/xp"),o=XPV;XPV=r;me.xp=r.total;charmPill();const mn=Math.ceil((r.boostUntil-Date.now())/6e4);if(mn>0)hb.textContent="⚡ Lagos Charm is on: every match is automatic · "+mn+" min left";else hb.remove()}const e=$("#xpv");if(e){e.textContent="⭐ "+r.total+" XP";$("#xpt").textContent="total earned · 💰 "+r.bal+" to spend"}const sk=$("#stk");if(sk)sk.outerHTML=streakCard();if(tab==="daily"&&(!o||o.today!==r.today||o.boostUntil!==r.boostUntil))render(1)}catch(e){}}
 const boostCard=()=>{const x=XPV||{today:0,goal:1000,boostUntil:0,claimed:false},on=x.boostUntil>Date.now(),p=Math.min(100,Math.round(x.today/x.goal*100));return `<div class="card bst"><b>⚡ Lagos Charm</b><p class="sub" style="margin:2px 0 10px">Earn ${x.goal} XP today to automatically match with any user for the next hour.</p><div class="vb"><span><b>${Math.min(x.today,x.goal)}</b> / ${x.goal} XP today</span><i><u style="width:${p}%"></u></i></div>${on?`<div class="gq">✨ Charm is ON. Every match you send is accepted automatically. Ends in about ${Math.max(1,Math.ceil((x.boostUntil-Date.now())/6e4))} min.</div>`:x.claimed?'<p class="note">Already used today. A new chance tomorrow.</p>':x.today>=x.goal?'<button class="btn" onclick="useCharm()">Turn on Lagos Charm ⚡</button>':'<p class="note">Earn XP by visiting spots, answering the daily question, matching and playing 20 Questions.</p>'}</div>`};
 async function useCharm(){try{XPV=await api("POST","/xp/boost");charmPill();toast("⚡ Lagos Charm is on for 1 hour!");render(1)}catch(e){toast(e.message)}}
 function openInts(){const a=me.interests=me.interests||[];modal(`${xb()}<h2 class="at">Your interests</h2><p class="sub as">Pick up to 5. They help us find people you click with.</p><div class="gcs" style="justify-content:center">${IL.map(x=>`<button class="gc ${a.includes(x)?"on":""}" onclick="tgI(this,'${x}')">${x}</button>`).join("")}</div><button class="btn" onclick="closeM();render(1)">Done</button>`)}
 const charmOn=()=>!!(XPV&&XPV.boostUntil>Date.now());
 const charmBar=()=>charmOn()?`<div class="chb" id="chb">⚡ Lagos Charm is on: every match is automatic · ${Math.ceil((XPV.boostUntil-Date.now())/6e4)} min left</div>`:"";
-function charmPill(){let e=$("#chp");const on=me&&XPV&&XPV.boostUntil>Date.now();if(!on){if(e)e.remove();return}if(!e){e=document.createElement("div");e.id="chp";e.className="chp";document.body.appendChild(e)}e.textContent="⚡ Lagos Charm · "+Math.max(1,Math.ceil((XPV.boostUntil-Date.now())/6e4))+" min left"}
 // ---------- Aunty Matchmaker ----------
 let CP=null;
 async function loadCupid(){if(!me)return;try{CP=await api("GET","/cupid");[...CP.mine.flatMap(c=>[c.a,c.b]),...CP.top.map(x=>x.user)].forEach(u=>{if(u)UC[u.id]=u});if(tab==="daily")render(1)}catch(e){}}
