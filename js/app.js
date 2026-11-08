@@ -3,7 +3,38 @@ const $=s=>document.querySelector(s),esc=s=>String(s==null?"":s).replace(/[&<>"]
 let TOK="";try{TOK=localStorage.getItem("lil_token")||""}catch(e){}
 const setTok=t=>{TOK=t;try{t?localStorage.setItem("lil_token",t):localStorage.removeItem("lil_token")}catch(e){}};
 let me=null,BACK="",XPV=null,tab="home",sc=0,cur=null,T=0,UC={},PH={},M={incoming:[],matches:[],sent:[]},PEO=[],PREV=null,LOW={},DECL={},POPPED={},MINIT=0,MSG=[],GM=null,VIS=[],DLY=null,ACTV=[],QAL=[],SR=null,sT=0,after=null,phd="",tav=null,dr=null,dmode="";
-async function api(m,p,b){const r=await fetch("/api"+p,{method:m,headers:{"Content-Type":"application/json",...(TOK?{Authorization:"Bearer "+TOK}:{})},body:b===undefined?undefined:JSON.stringify(b)});let j=null;try{j=await r.json()}catch(e){}if(!r.ok){const e=new Error((j&&j.error)||"Something went wrong");e.status=r.status;if(r.status===401&&TOK&&me)setTimeout(()=>logout(true));throw e}return j}
+async function api(m, p, b) {
+    const API_ROOT = String(window.LIL_API || "").replace(/\/+$/, "");
+    const API_URL = API_ROOT ? API_ROOT + "/api" + p : "/api" + p;
+
+    const r = await fetch(API_URL, {
+        method: m,
+        headers: {
+            "Content-Type": "application/json",
+            ...(TOK ? { Authorization: "Bearer " + TOK } : {})
+        },
+        body: b === undefined ? undefined : JSON.stringify(b)
+    });
+
+    let j = null;
+
+    try {
+        j = await r.json();
+    } catch (e) {}
+
+    if (!r.ok) {
+        const e = new Error((j && j.error) || "Something went wrong");
+        e.status = r.status;
+
+        if (r.status === 401 && TOK && me) {
+            setTimeout(() => logout(true));
+        }
+
+        throw e;
+    }
+
+    return j;
+}
 const IC={h:"M12 21s-8-5.3-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.7-8 11-8 11z",u:"M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c0-4 3.6-7 8-7s8 3 8 7",c:"M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.6A8 8 0 1 1 21 12z",m:"M9 4 3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14",pin:"M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11zM12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",sp:"M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z",ar:"M5 12h14M13 6l6 6-6 6",s:"M22 2 11 13M22 2l-7 20-4-9-9-4z",nav:"M3 11l19-9-9 19-2-8z",pp:"M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21c0-4 3-6 7-6s7 2 7 6M16 3a4 4 0 0 1 0 8M18 15c2.5.6 4 2.4 4 6",eye:"M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z",x:"M6 6l12 12M18 6 6 18",pen:"M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"};
 const ic=(d,f)=>`<svg class="ic" viewBox="0 0 24 24" fill="${f?"currentColor":"none"}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
 function toast(m){const e=document.createElement("div");e.className="toast";e.textContent=m;document.body.appendChild(e);setTimeout(()=>e.remove(),2600)}
