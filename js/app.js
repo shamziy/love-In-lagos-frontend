@@ -1,4 +1,3 @@
-
 // Love in Lagos frontend. Every screen talks to the backend through /api (see backend/server.mjs).
 const $=s=>document.querySelector(s),esc=s=>String(s==null?"":s).replace(/[&<>"]/g,k=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[k]));
 let TOK="";try{TOK=localStorage.getItem("lil_token")||""}catch(e){}
@@ -10,6 +9,32 @@ const ic=(d,f)=>`<svg class="ic" viewBox="0 0 24 24" fill="${f?"currentColor":"n
 function toast(m){const e=document.createElement("div");e.className="toast";e.textContent=m;document.body.appendChild(e);setTimeout(()=>e.remove(),2600)}
 const closeM=()=>document.querySelectorAll(".ov").forEach(e=>e.remove());
 function modal(h,c=""){closeM();const o=document.createElement("div");o.className="ov "+c;o.innerHTML=`<div class="md ${c}">${h}</div>`;o.onclick=e=>{if(e.target===o)closeM()};document.body.appendChild(o)}
+
+// ---------- Stack Game ----------
+function openStackGame(){
+    modal(`
+        <div class="stack-game-header">
+            <div>
+                <b>🎮 Stack Game</b>
+                <small>How high can you stack?</small>
+            </div>
+            <button
+                class="stack-game-close"
+                type="button"
+                onclick="closeM()"
+                aria-label="Close game"
+            >✕</button>
+        </div>
+        <iframe
+            class="stack-game-frame"
+            src="https://shamziy.github.io/stackgame/"
+            title="Love in Lagos Stack Game"
+            allow="fullscreen; gamepad"
+            allowfullscreen
+        ></iframe>
+    `,"stack-game-modal");
+}
+
 const gate=w=>`<div class="card gt">${ic(IC.h)}<h2>Sign in to ${w}</h2><p class="sub">Create a free account to play and chat.</p><button class="btn" onclick="openAuth('up')">Create account</button><button class="btn o" onclick="openAuth('in')">Log in</button></div>`;
 // ---------- people, bitmojis ----------
 const avOf=u=>({sk:"#a8714f",sh:"#dc5f84",bg:"#f6e3f8",...(u.avatar||{})});
@@ -101,7 +126,56 @@ const ago=t=>{const m=Math.round((Date.now()-t)/6e4);return m<1?"just now":m<60?
 const VS=[[50,84,42],[28,86,42],[72,86,42],[12,80,36],[88,80,36],[40,76,34],[62,76,34],[20,70,30],[80,70,30],[50,68,30],[8,60,28],[92,60,28]];
 const visHTML=v=>v.slice(0,12).map((x,i)=>{const s=VS[i];return `<button class="vs" style="left:${s[0]}%;top:${s[1]}%;opacity:${i<4?1:i<8?.9:.75};z-index:${20-i}" onclick="bio(${x.user.id})">${av(x.user,s[2])}${i<3?`<span class="vn">${esc(x.user.name)}</span>`:""}</button>`}).join("");
 async function loadVisitors(){if(!me)return;try{VIS=await api("GET","/visitors")}catch(e){return}VIS.forEach(x=>UC[x.user.id]=x.user);if(tab==="corner")render(1)}
-function cornerV(){if(!me)return gate("see your corner");return `<h2>${esc(me.name)}'s Corner</h2><p class="sub">Your spot on the Lagos street.</p><div class="scn crn"><svg viewBox="0 0 360 300" preserveAspectRatio="xMidYMid slice">${cornerSvg(me.name+"'s Corner","#f6d9b3",0)}</svg>${visHTML(VIS)}</div><h3 class="sec">Visitors${VIS.length?` (${VIS.length})`:""}</h3><p class="note" style="text-align:left;margin:0 0 10px">Only people who tap on your profile show up here. Recent visitors stand at the front, older ones further back.</p>`+(VIS.length?VIS.map(x=>`<button class="row" onclick="bio(${x.user.id})">${av(x.user,48)}<div><b>${esc(x.user.name)}</b><div class="jb">Viewed your profile · ${ago(x.at)}</div></div></button>`).join(""):'<p class="sub">No visitors yet.</p>')}
+
+function cornerV(){
+    if(!me)return gate("see your corner");
+
+    return `
+        <h2>${esc(me.name)}'s Corner</h2>
+        <p class="sub">Your spot on the Lagos street.</p>
+
+        <div class="scn crn">
+            <svg viewBox="0 0 360 300" preserveAspectRatio="xMidYMid slice">
+                ${cornerSvg(me.name+"'s Corner","#f6d9b3",0)}
+            </svg>
+            ${visHTML(VIS)}
+        </div>
+
+        <div class="play-zone">
+            <div class="play-zone-info">
+                <span class="play-zone-icon">🎮</span>
+                <div>
+                    <b>Play Zone</b>
+                    <small>Take a break and beat your high score!</small>
+                </div>
+            </div>
+            <button class="play-zone-button" onclick="openStackGame()">
+                Play Now
+            </button>
+        </div>
+
+        <h3 class="sec">Visitors${VIS.length?` (${VIS.length})`:""}</h3>
+        <p class="note" style="text-align:left;margin:0 0 10px">
+            Only people who tap on your profile show up here.
+            Recent visitors stand at the front, older ones further back.
+        </p>
+
+        ${
+            VIS.length
+            ? VIS.map(x=>`
+                <button class="row" onclick="bio(${x.user.id})">
+                    ${av(x.user,48)}
+                    <div>
+                        <b>${esc(x.user.name)}</b>
+                        <div class="jb">Viewed your profile · ${ago(x.at)}</div>
+                    </div>
+                </button>
+            `).join("")
+            : '<p class="sub">No visitors yet.</p>'
+        }
+    `;
+}
+
 // ---------- daily: your day on the app + questions and answers ----------
 async function loadDaily(){if(!me)return;loadXP();loadLB();loadCupid();try{[DLY,ACTV,QAL]=await Promise.all([api("GET","/daily"),api("GET","/activity"),api("GET","/qa")])}catch(e){return}if(tab==="daily")render(1)}
 function dailyV(){if(!me)return gate("play Lagos Daily");if(!DLY)return '<p class="sub">Loading…</p>';const d=DAILY[new Date().getDay()],y=DLY.answered,td=ACTV,
