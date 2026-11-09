@@ -1,3 +1,4 @@
+
 // connect.js: finds the backend and sends every /api call to it.
 // If NO backend can be found it switches to DEMO mode: a small fake server runs inside this page
 // (16 pretend people, everything saved only in this browser) so the website still works.
@@ -115,16 +116,96 @@ function route(m, path, q, b, tok) {
   if (path === "/report" && m === "POST") return O;
   return E(404, "Not found");
 }
-function tick() { try { const t = now(), bots = D.users.filter(x => x.bot), humans = D.users.filter(x => !x.bot && x.seen > t - 90000);
-  (D.cp || []).filter(c => c.status === "open" && c.at < t - 40000).forEach(c => { const A = U(c.a), B = U(c.b); if (!A || !B || rel(A.id, B.id)) return; if (A.bot && B.bot) { if (hnum(c.id) % 100 < 75) D.req.push({ id: nid(), from: A.id, to: B.id, status: "accepted", pct: compat(A, B).pct, at: t }); } else if (A.bot !== B.bot) { const bt = A.bot ? A : B, hh = A.bot ? B : A; D.req.push({ id: nid(), from: bt.id, to: hh.id, status: "pending", pct: compat(bt, hh).pct, at: t }); notify(hh.id, "match", "💘 " + bt.name + " sent you a match request", bt.id); } });
-  bots.forEach(x => x.seen = t); if (Math.random() < 0.08) pick(bots).loc = Math.floor(Math.random() * 9);
-  D.req.filter(r => r.status === "pending" && U(r.to).bot && r.at < t - 3500).forEach(r => { r.status = hnum(r.id) % 100 < (r.pct >= 50 ? 85 : 55) ? "accepted" : "declined"; if (r.status === "accepted") { award(r.from, 25, "match"); award(r.to, 25, "match"); notify(r.from, "match", "🎉 " + nameOf(r.to) + " accepted your match!", r.to); } });
-  D.users.filter(x => !x.bot).forEach(h => bots.forEach(bt => { const ms = between(h.id, bt.id), l = ms[ms.length - 1]; if (l && l.from === h.id && l.at < t - 1500 && friends(h.id, bt.id)) D.msg.push({ id: nid(), from: bt.id, to: h.id, text: pick(BR), at: t }); if (!(D.nt || []).some(x => x.u === h.id && x.kind === "msg" && x.from === bt.id && !x.isread)) notify(h.id, "msg", bt.name + ": " + D.msg[D.msg.length - 1].text.slice(0, 60), bt.id); }));
-  D.games.forEach(g => { const bB = U(g.b); if (g.status === "invited" && bB.bot && g.at < t - 2500) { if (hnum(g.id) % 100 < 75) startGame(g); else g.status = "declined"; }
-    else if (g.status === "playing" && Math.random() < 0.5) { const asker = g.i % 2 === 0 ? g.a : g.b, ans = asker === g.a ? g.b : g.a; if (U(asker).bot && !g.asked) g.asked = 1; else if (U(ans).bot && g.asked) answer(g, ans, pick(BA)); } });
-  if (humans.length && Math.random() < 0.02) { const h = pick(humans), bt = pick(bots), pct = compat(bt, h).pct; if (pct >= 15 && !rel(bt.id, h.id) && !blocked(bt.id, h.id)) D.req.push({ id: nid(), from: bt.id, to: h.id, status: "pending", pct, at: t }); }
-  if (humans.length && Math.random() < 0.03) { const h = pick(humans), bt = pick(bots); D.views = D.views.filter(v => !(v.v === bt.id && v.to === h.id)); D.views.push({ v: bt.id, to: h.id, at: t }); }
-  save(); } catch (e) {} }
+function tick() {
+  try {
+    const t = now(), bots = D.users.filter(x => x.bot), humans = D.users.filter(x => !x.bot && x.seen > t - 90000);
+
+    (D.cp || []).filter(c => c.status === "open" && c.at < t - 40000).forEach(c => {
+      const A = U(c.a), B = U(c.b);
+      if (!A || !B || rel(A.id, B.id)) return;
+      if (A.bot && B.bot) {
+        if (hnum(c.id) % 100 < 75) D.req.push({ id: nid(), from: A.id, to: B.id, status: "accepted", pct: compat(A, B).pct, at: t });
+      } else if (A.bot !== B.bot) {
+        const bt = A.bot ? A : B, hh = A.bot ? B : A;
+        D.req.push({ id: nid(), from: bt.id, to: hh.id, status: "pending", pct: compat(bt, hh).pct, at: t });
+        notify(hh.id, "match", "💘 " + bt.name + " sent you a match request", bt.id);
+      }
+    });
+
+    bots.forEach(x => x.seen = t);
+    if (Math.random() < 0.08) pick(bots).loc = Math.floor(Math.random() * 9);
+
+    D.req.filter(r => r.status === "pending" && U(r.to).bot && r.at < t - 3500).forEach(r => {
+      r.status = hnum(r.id) % 100 < (r.pct >= 50 ? 85 : 55) ? "accepted" : "declined";
+      if (r.status === "accepted") {
+        award(r.from, 25, "match");
+        award(r.to, 25, "match");
+        notify(r.from, "match", "🎉 " + nameOf(r.to) + " accepted your match!", r.to);
+      }
+    });
+
+    // Corrected bot-reply section: only create a notification after a real reply exists.
+    D.users.filter(x => !x.bot).forEach(h => bots.forEach(bt => {
+      const ms = between(h.id, bt.id);
+      const lastMessage = ms[ms.length - 1];
+
+      if (
+        lastMessage &&
+        lastMessage.from === h.id &&
+        lastMessage.at < t - 1500 &&
+        friends(h.id, bt.id)
+      ) {
+        const reply = pick(BR);
+
+        D.msg.push({
+          id: nid(),
+          from: bt.id,
+          to: h.id,
+          text: reply,
+          at: t
+        });
+
+        const hasUnreadNotification = (D.nt || []).some(
+          x => x.u === h.id &&
+               x.kind === "msg" &&
+               x.from === bt.id &&
+               !x.isread
+        );
+
+        if (!hasUnreadNotification) {
+          notify(h.id, "msg", bt.name + ": " + reply.slice(0, 60), bt.id);
+        }
+      }
+    }));
+
+    D.games.forEach(g => {
+      const bB = U(g.b);
+      if (g.status === "invited" && bB.bot && g.at < t - 2500) {
+        if (hnum(g.id) % 100 < 75) startGame(g);
+        else g.status = "declined";
+      } else if (g.status === "playing" && Math.random() < 0.5) {
+        const asker = g.i % 2 === 0 ? g.a : g.b, ans = asker === g.a ? g.b : g.a;
+        if (U(asker).bot && !g.asked) g.asked = 1;
+        else if (U(ans).bot && g.asked) answer(g, ans, pick(BA));
+      }
+    });
+
+    if (humans.length && Math.random() < 0.02) {
+      const h = pick(humans), bt = pick(bots), pct = compat(bt, h).pct;
+      if (pct >= 15 && !rel(bt.id, h.id) && !blocked(bt.id, h.id)) {
+        D.req.push({ id: nid(), from: bt.id, to: h.id, status: "pending", pct, at: t });
+      }
+    }
+
+    if (humans.length && Math.random() < 0.03) {
+      const h = pick(humans), bt = pick(bots);
+      D.views = D.views.filter(v => !(v.v === bt.id && v.to === h.id));
+      D.views.push({ v: bt.id, to: h.id, at: t });
+    }
+
+    save();
+  } catch (e) {}
+}
 const demoFetch = async (url, o = {}) => { const [p, qs] = String(url).slice(4).split("?"); let b = {}; try { b = o.body ? JSON.parse(o.body) : {}; } catch (e) {}
   const [c, j] = route(o.method || "GET", p, new URLSearchParams(qs || ""), b, ((o.headers || {}).Authorization || "").replace("Bearer ", "")); save();
   return new Response(JSON.stringify(j), { status: c, headers: { "Content-Type": "application/json" } }); };
