@@ -1,4 +1,3 @@
-
 :root{--bg:#fdf8f0;--card:#fffdfa;--soft:#f3ebdf;--ink:#3b2a3a;--mut:#85687d;--pri:#dc5f84;--pri2:#c94872;--line:#eadfd3;--pk:#f6e3e8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1e1620;--card:#2a1f2c;--soft:#35293a;--ink:#fbeff3;--mut:#c9aebd;--line:#46374b;--pk:#43283a}}
 :root[data-theme="dark"]{--bg:#1e1620;--card:#2a1f2c;--soft:#35293a;--ink:#fbeff3;--mut:#c9aebd;--line:#46374b;--pk:#43283a}
@@ -133,164 +132,67 @@ select{width:100%;padding:12px;border-radius:14px;border:0;background:var(--soft
 /* v6: match level tags */
 .tag.lv4{background:#ffd1e8;color:#8a1450}.tag.lv3{background:#ffd9b8;color:#8a3b00}.tag.lv2{background:#e6dcff;color:#4b2a9a}.tag.lv1{background:#d6f3dd;color:#1d6b3a}
 
-/* v7: Play Zone card */
-.play-zone {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    padding: 12px;
-    margin: 16px 0 20px;
-}
 
-.play-zone-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-}
+/* Love in Lagos Play Zone — compact card above Recent Visitors */
+.play-zone-card{position:relative;display:flex;align-items:center;gap:12px;margin:16px 0 20px;padding:10px 30px 10px 12px;min-height:94px;border:1px solid #dc5f85aa;border-radius:20px;background:linear-gradient(110deg,#352238 0%,#241824 62%,#301d30 100%);box-shadow:0 0 12px #dc5f8418;color:#fbeff3;overflow:hidden}
+.play-art{width:72px;height:70px;flex:none;display:grid;place-items:center;position:relative;border-right:1px solid #dc5f8444}
+.stack-tower{width:58px;height:54px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:2px;filter:drop-shadow(0 4px 4px #09050b66);transform:perspective(180px) rotateY(-10deg)}
+.stack-tower i{display:block;width:43px;height:7px;border-radius:3px;background:linear-gradient(90deg,#ffcf45,#f59e0b);box-shadow:inset 0 1px 1px #ffffff88}
+.stack-tower i:nth-child(2){width:47px;background:linear-gradient(90deg,#fa78ad,#d83d80)}.stack-tower i:nth-child(3){width:51px;background:linear-gradient(90deg,#69d5ff,#3189d7)}.stack-tower i:nth-child(4){width:55px;background:linear-gradient(90deg,#8ee18b,#36a75b)}.stack-tower i:nth-child(5){width:59px;background:linear-gradient(90deg,#ffc45d,#ed842b)}.stack-tower i:nth-child(6){width:63px;background:linear-gradient(90deg,#ff9a84,#d75b5b)}
+.play-copy{flex:1;min-width:0}.play-heading{display:flex;align-items:center;gap:7px;color:#e96a96;font:800 18px 'Baloo 2',sans-serif;line-height:1.15}.playpad{font-size:19px}.play-copy p{margin:2px 0 7px;color:#e3cbd8;font-size:12px}.play-now{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid #e96a96;border-radius:99px;padding:5px 13px;background:#dc5f8412;color:#f276a1;font:800 13px 'Baloo 2',sans-serif}.play-now:active{background:#dc5f8422;transform:scale(.98)}.play-arrow{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:26px;color:#f4b3ca}
+@media(max-width:380px){.play-zone-card{gap:9px;padding-left:9px;min-height:88px}.play-art{width:62px}.play-heading{font-size:17px}.play-copy p{font-size:11px}}
+.ov.stack-game-overlay{align-items:stretch!important;padding:0!important;background:#130d18f2!important}.md.stack-game-overlay{margin:0 auto;display:flex;flex-direction:column;gap:8px;width:100%;height:100%;max-height:100%;max-width:520px;border-radius:0;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 10px);overflow:hidden;background:#1e1620}.stack-game-head{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#fbeff3;flex:none}.stack-game-head b{display:block;font:800 21px 'Baloo 2'}.stack-game-head small{display:block;color:#cdb4c4;font-size:12px}.stack-game-close{width:40px;height:40px;border:0;border-radius:50%;background:#43283a;color:#fff;font-size:21px}.stack-game-frame{width:100%;flex:1;min-height:0;border:0;border-radius:18px;background:#1c1b3a}.stack-game-foot{flex:none;text-align:center;color:#cdb4c4;font-size:11px;margin:0}
 
-.play-zone-icon {
-    width: 42px;
-    height: 42px;
-    flex: none;
-    display: grid;
-    place-items: center;
-    background: var(--pk);
-    border-radius: 13px;
-    font-size: 22px;
-}
+/* small phones: keep the header inside the screen */
+.lg{min-width:0}.pf{max-width:46vw;overflow:hidden;white-space:nowrap}.pf>:first-child{flex:none}
+@media(max-width:430px){header .hb[aria-label="Chats"]{display:none}.pf{max-width:40vw}}
+@media(max-width:360px){header{gap:6px;padding:10px 12px}.lg{font-size:17px;gap:6px}.lg i{width:34px;height:34px}.pf{padding:6px 10px;font-size:13px;max-width:40vw}header .hb[aria-label="Chats"]{display:none}}
 
-.play-zone-info b {
-    display: block;
-    font: 800 16px "Baloo 2";
-    color: var(--ink);
-}
+/* Stack Game overlay: right height on phones, loading state, fallback link */
+.ov.stack-game-overlay{height:var(--gvh,100dvh);touch-action:none;overscroll-behavior:none}.md.stack-game-overlay{height:var(--gvh,100dvh);max-height:var(--gvh,100dvh)}
+.stack-game-head>div{flex:1;min-width:0}
+.stack-game-box{position:relative;flex:1;min-height:0;border-radius:18px;overflow:hidden;background:#1c1b3a}.stack-game-box .stack-game-frame{position:absolute;inset:0;width:100%;height:100%;border-radius:0;display:block}
+.stack-game-load{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fbeff3;text-align:center;padding:20px;background:#1c1b3a}.stack-game-load p{margin:0;font-weight:700}.stack-game-load .btn{width:auto;padding:10px 20px;text-decoration:none}
+.sgs{width:34px;height:34px;border-radius:50%;border:4px solid #ffffff33;border-top-color:#f276a1;animation:sgspin .9s linear infinite}@keyframes sgspin{to{transform:rotate(360deg)}}
+.stack-game-new{width:40px;height:40px;border-radius:50%;background:#43283a;color:#fff;display:grid;place-items:center;text-decoration:none;font-size:20px;flex:none}
+.stack-game-foot a{color:#f276a1;font-weight:800}
+.scn.map{aspect-ratio:360/340}.pin .pi{width:78px}
 
-.play-zone-info small {
-    display: block;
-    color: var(--mut);
-    font-size: 11px;
-    line-height: 1.3;
-}
+canvas.sg{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+/* Amebo of the Day */
+.amb{text-align:left;margin-top:14px;background:linear-gradient(160deg,var(--card),var(--pk));border:1.5px dashed #e8b9a0;position:relative;overflow:hidden}
+.amb:before{content:"";position:absolute;inset:0 0 auto;height:5px;background:repeating-linear-gradient(90deg,#f4b942 0 18px,#dc5f84 18px 36px,#8f74b8 36px 54px)}
+.amh{display:flex;align-items:center;gap:10px;margin:4px 0 12px}.amh>div{flex:1}.amh b{font-size:19px;display:block;line-height:1.2}.amh small{color:var(--mut);font-weight:700;font-size:12.5px}
+.ams{background:#fff3d6;color:#b26a00;border-radius:99px;padding:3px 12px;font:800 15px "Baloo 2"}
+.env{text-align:center;padding:14px 6px 4px;color:var(--ink)}.env b{display:block;font-size:17px}.env span{color:var(--mut);font-size:14px}
+.envi{font-size:56px;line-height:1;margin-bottom:6px;animation:amfl 3s ease-in-out infinite}@keyframes amfl{50%{transform:translateY(-6px) rotate(-4deg)}}
+.gst{background:var(--card);border-radius:22px;padding:16px 16px 12px;box-shadow:0 6px 18px #dc5f8418;position:relative}.gst.pop{animation:ampop .45s cubic-bezier(.2,1.3,.4,1)}@keyframes ampop{from{opacity:0;transform:translateY(14px) scale(.94) rotate(-2deg)}}
+.gcat{display:inline-block;background:var(--pk);color:var(--pri2);border-radius:99px;padding:2px 12px;font-size:12.5px;font-weight:800}
+.gtx{font:700 18px/1.4 "Baloo 2",Nunito,sans-serif;margin:10px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.gau{display:flex;align-items:center;gap:8px;font-size:14px}.gau em{margin-left:auto;font-size:12px;color:var(--mut)}.amav{width:34px;height:34px;border-radius:50%;background:#3b2a3a;display:grid;place-items:center;font-size:18px}
+.grx{display:flex;gap:6px;margin-top:12px}.grx button{flex:1;border:1.5px solid var(--line);background:var(--soft);border-radius:16px;padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:0;color:var(--ink);transition:transform .15s}
+.grx button span{font-size:22px;line-height:1.2}.grx button i{font:800 12px "Baloo 2";font-style:normal;min-height:15px;color:var(--mut)}.grx button.on{background:var(--pk);border-color:var(--pri)}.grx button:active{transform:scale(.9)}
+.gxl{text-align:center;font-size:12.5px;color:var(--mut);margin-top:6px}
+.amact .btn{margin-top:10px}.amme{display:flex;align-items:center;gap:10px;margin-top:12px;background:var(--soft);border-radius:18px;padding:10px 14px}.amme>div{flex:1}.amme b{display:block}.amme small{color:var(--mut)}
+.seg{display:flex;background:var(--soft);border-radius:99px;padding:4px;margin:12px 0 6px}.seg button{flex:1;border:0;background:none;border-radius:99px;padding:9px 6px;font:800 15px "Baloo 2";color:var(--mut)}.seg button.on{background:var(--pri);color:#fff}
+.amc{text-align:right;font-size:12px;color:var(--mut);margin-top:2px}.amwho{font-size:13.5px;color:var(--mut);text-align:center;min-height:30px}.amwho span{display:inline-flex;align-items:center;gap:6px}
+@media(prefers-reduced-motion:reduce){.envi,.gst.pop{animation:none}}
+.gau .av{margin:0;flex:none}.gau b{margin-right:auto}.amwho .av{margin:0}
 
-.play-zone-button {
-    flex: none;
-    border: 0;
-    border-radius: 99px;
-    padding: 9px 15px;
-    background: var(--pri);
-    color: white;
-    font: 800 13px "Baloo 2";
-}
+/* Amebo banner */
+.amb:before{display:none}
+.amh{display:block;position:relative;overflow:hidden;margin:-22px -18px 16px;padding:20px 18px 16px;background:linear-gradient(135deg,#ff9a5c 0%,#dc5f84 55%,#8f74b8 100%);color:#fff;border-radius:0 0 26px 26px;box-shadow:0 8px 20px #dc5f8433}
+.amh:after{content:"";position:absolute;right:-30px;top:-40px;width:130px;height:130px;border-radius:50%;background:radial-gradient(#ffffff40,#ffffff00 70%)}
+.amt{display:flex;align-items:center;gap:12px;position:relative;z-index:1}.amt b{font:800 24px/1.1 "Baloo 2";display:block;color:#fff;text-shadow:0 2px 6px #0002}.amt small{color:#ffffffe6;font-weight:700;font-size:13px}
+.amtile{width:46px;height:46px;border-radius:16px;background:#ffffff30;border:1.5px solid #ffffff55;display:grid;place-items:center;font-size:24px;flex:none;transform:rotate(-6deg);backdrop-filter:blur(2px)}
+.amp{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;position:relative;z-index:1}.amp span{background:#ffffff2e;border:1px solid #ffffff4d;border-radius:99px;padding:3px 12px;font:800 13px "Baloo 2"}.amp .amst{background:#fff3d6;color:#b26a00;border-color:transparent}
+.amb1,.amb2{position:absolute;font-style:normal;opacity:.28;pointer-events:none}.amb1{right:14px;top:10px;font-size:54px;transform:rotate(12deg)}.amb2{right:70px;bottom:6px;font-size:22px;opacity:.5;animation:amfl 3s ease-in-out infinite}
 
-/* Full-screen Stack Game modal */
-.ov.stack-game-modal {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    height: 100dvh;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    align-items: stretch;
-    justify-content: stretch;
-    background: #160d19;
-    z-index: 9999;
-}
-
-.md.stack-game-modal {
-    position: relative;
-    width: 100%;
-    max-width: none;
-    height: 100%;
-    height: 100dvh;
-    max-height: none;
-    margin: 0;
-    padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
-    border-radius: 0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    animation: none;
-}
-
-.stack-game-header {
-    flex: none;
-    min-height: 58px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 16px;
-    background: var(--card);
-}
-
-.stack-game-header b {
-    display: block;
-    font: 800 19px "Baloo 2";
-    color: var(--ink);
-}
-
-.stack-game-header small {
-    display: block;
-    color: var(--mut);
-    font-size: 12px;
-}
-
-.stack-game-close {
-    width: 42px;
-    height: 42px;
-    flex: none;
-    border: 0;
-    border-radius: 50%;
-    background: var(--soft);
-    color: var(--ink);
-    font-size: 22px;
-}
-
-.stack-game-frame {
-    display: block;
-    width: 100%;
-    height: 100%;
-    flex: 1;
-    min-height: 0;
-    border: 0;
-    border-radius: 0;
-    background: #111;
-}
-
-@media (max-width: 380px) {
-    .play-zone {
-        padding: 10px;
-    }
-
-    .play-zone-info small {
-        font-size: 10px;
-    }
-
-    .play-zone-button {
-        padding: 8px 12px;
-    }
-}
-
-/* Keep the Play Zone and game usable on small screens */
-@media (max-width: 520px) {
-    .ov.stack-game-modal {
-        width: 100vw;
-        max-width: 100vw;
-    }
-
-    .md.stack-game-modal {
-        width: 100vw;
-        max-width: 100vw;
-    }
-
-    .stack-game-frame {
-        width: 100%;
-    }
-}
+/* Amebo: calmer, professional look */
+.amb{background:var(--card);border:1px solid var(--line);box-shadow:0 4px 14px #3b2a3a12}
+.amh{background:#3b2a3a;color:#fff;box-shadow:none;border-bottom:3px solid var(--pri)}.amh:after{display:none}
+.amt b{text-shadow:none;font-size:22px}.amt small{color:#e9dbe3;font-weight:600}
+.amtile{background:#ffffff14;border:1px solid #ffffff2e;transform:none;border-radius:14px;backdrop-filter:none}
+.amp span{background:transparent;border:1px solid #ffffff40;font-weight:700;color:#f3e8ee}.amp .amst{background:var(--pri);color:#fff;border-color:var(--pri)}
+.gst{box-shadow:none;border:1px solid var(--line);background:var(--card)}.gst.ghs{margin-bottom:12px}
+.amme{background:var(--soft)}
