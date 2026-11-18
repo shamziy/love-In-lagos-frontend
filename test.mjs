@@ -1,0 +1,28 @@
+import http from "node:http"; import createAmebo from "./amebo.mjs";
+const amebo = createAmebo(); // fake host backend with /api/me
+const srv = http.createServer(async (q, r) => { if (await amebo(q, r)) return; if (q.url === "/api/me") { const t = q.headers.authorization || ""; if (!t.startsWith("Bearer u")) { r.writeHead(401); return r.end("{}"); } const id = +t.slice(8); r.setHeader("Content-Type", "application/json"); return r.end(JSON.stringify({ id, name: "user" + id, avatar: { sk: "#a8714f" } })); } r.writeHead(404); r.end(); });
+await new Promise(r => srv.listen(0, r)); const P = srv.address().port; process.env.PORT = P;
+const call = async (u, m, p, b) => { const r = await fetch(`http://127.0.0.1:${P}/api/amebo${p}`, { method: m, headers: { Authorization: "Bearer u" + u, "Content-Type": "application/json" }, body: b && JSON.stringify(b) }); return [r.status, await r.json().catch(() => null)]; };
+const ok = (n, c) => { console.log(c ? "PASS" : "FAIL", n); if (!c) process.exitCode = 1; };
+let r = await call(1, "POST", "", { text: "Short", cat: "rnd" }); ok("rejects short", r[0] === 400);
+r = await call(1, "POST", "", { text: "My landlord just asked for 2 years rent again o", cat: "lag", anon: true }); ok("posts anon", r[0] === 201 && r[1].author === null && r[1].mine);
+const gid = r[1].id; r = await call(1, "POST", "", { text: "Trying to post a second gist today", cat: "rnd" }); ok("1/day limit", r[0] === 409);
+r = await call(2, "GET", "/next"); ok("reader sees gist, no author id", r[1].gist && r[1].gist.id === gid && r[1].gist.author === null && !JSON.stringify(r[1]).includes('"uid"') && !r[1].gist.mine);
+r = await call(2, "GET", "/next?seen=" + gid); ok("no repeat", r[1].gist === null);
+r = await call(2, "POST", `/${gid}/react`, { emoji: "😂" }); ok("react", r[1].reactions["😂"] === 1 && r[1].my === "😂");
+r = await call(1, "POST", `/${gid}/react`, { emoji: "😂" }); ok("cannot react to own", r[0] === 400);
+r = await call(3, "POST", "", { text: "Named gist about Third Mainland traffic", cat: "lag", anon: false }); ok("named shows author", r[1].author && r[1].author.name === "user3");
+r = await call(2, "DELETE", `/${gid}`); ok("cannot delete others", r[0] === 403);
+r = await call(1, "DELETE", `/${gid}`); ok("owner deletes", r[0] === 200);
+r = await call(1, "POST", "", { text: "Reposting after deleting should fail", cat: "rnd" }); ok("no repost after delete", r[0] === 409);
+r = await call(1, "GET", ""); ok("status+streak", r[1].streak === 1 && r[1].canPost === false && r[1].resetsAt > Date.now());
+const o = await fetch(`http://127.0.0.1:${P}/api/amebo`, { method: "OPTIONS" }); ok("CORS preflight", o.status === 204 && o.headers.get("access-control-allow-methods").includes("DELETE"));
+const un = await fetch(`http://127.0.0.1:${P}/api/amebo`); ok("401 when logged out", un.status === 401);
+r = await call(2, "GET", "/read"); ok("deleted gist drops out of history", r[1].length === 0);
+r = await call(2, "GET", "/next"); const g3 = r[1].gist; ok("reads the named gist", g3 && g3.author && g3.author.name === "user3");
+r = await call(2, "GET", "/read"); ok("read but not reacted is not listed", r[1].length === 0);
+await call(2, "POST", `/${g3.id}/react`, { emoji: "❤️" });
+r = await call(2, "GET", "/read"); ok("reacted gist is listed", r[1].length === 1 && r[1][0].id === g3.id && r[1][0].my === "❤️");
+r = await call(3, "GET", "/read"); ok("history is per user", r[1].length === 0);
+r = await call(2, "GET", "/next"); ok("no repeat after refresh (server memory)", r[1].gist === null);
+srv.close();
