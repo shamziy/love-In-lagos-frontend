@@ -1,0 +1,24 @@
+REPLY TO A MESSAGE (swipe a message to the right): files to put in your repositories
+=====================================================================================
+
+FRONTEND repository (GitHub Pages)
+  NEW      js/reply.js        <- add this file (new)
+  REPLACE  index.html         <- adds one line that loads js/reply.js
+  REPLACE  js/app.js
+  REPLACE  js/connect.js      <- only used for the local/demo mode
+  REPLACE  css/style.css
+
+BACKEND repository (Render)
+  REPLACE  server.mjs         <- stores which message a reply points to
+  (optional) staging-check.mjs, the test script, now also checks replies
+
+Database: nothing for you to do. When the new server.mjs starts it adds one empty column
+(messages.reply_to) by itself. Existing messages are untouched and keep working.
+Upload order: either works. A new website with the old server still sends messages normally
+(the quote just isn't saved); the feature needs both.
+
+How it works for people
+  - Swipe a message to the right (on a computer: drag it with the mouse) past the halfway mark and let go.
+  - A bar "Replying to ..." appears above the message box. The X (or the Escape key) cancels it.
+  - The message you send shows a small quote of the original. Tapping the quote jumps to the original.
+  - I did not add "hold to reply": on phones, holding a message is how people select text to copy it.
