@@ -1,0 +1,28 @@
+REPLY TO A MESSAGE (swipe a message): files to put in your repositories
+===========================================================================
+(This replaces the earlier version of the same list. If you already uploaded the first version,
+ upload js/reply.js, js/app.js and css/style.css again. The server file did not change.)
+
+FRONTEND repository (GitHub Pages)
+  NEW      js/reply.js        <- add this file (new). If you already added it, REPLACE it.
+  REPLACE  index.html         <- loads js/reply.js (one line)
+  REPLACE  js/app.js
+  REPLACE  js/connect.js      <- only used for the local/demo mode
+  REPLACE  css/style.css
+
+BACKEND repository (Render)
+  REPLACE  server.mjs         <- stores which message a reply points to (unchanged since the first version)
+  (optional) staging-check.mjs
+
+Database: nothing for you to do. The new server.mjs adds one empty column (messages.reply_to) by itself.
+
+How it works for people
+  - PHONE:   swipe a message to the right past the halfway mark and let go.
+  - LAPTOP:  swipe two fingers sideways on the trackpad while the pointer is over the message
+             (either direction, because laptops differ in their scroll-direction setting), or drag it with the mouse.
+  - A bar "Replying to ..." appears above the message box. The X (or the Escape key) cancels it.
+  - The sent message shows a small quote of the original. Tapping the quote jumps to the original.
+  - On Mac, a sideways two-finger swipe normally means "go Back". Over a message it no longer does.
+
+If it STILL does nothing on your device, tell me: the device, the browser, and what you did (swipe with a finger,
+two-finger swipe on a trackpad, or mouse drag). I could only test Chrome's engine here, not Safari, Firefox or a real phone.
